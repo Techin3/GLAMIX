@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+
+    <meta charset="UTF-8">
+    <title>ระบบชำระเงิน</title>
+    
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .payment-container {
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 25px;
+        }
+
+        .payment-option {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .payment-option:has(input:checked) {
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+        
+        .payment-option input[type="radio"] {
+            margin-right: 10px;
+            accent-color: #007bff;
+        }
+
+        .payment-option label {
+            font-weight: bold;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .description {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+            margin-left: 25px;
+        }
+
+        /* ปุ่ม "ยืนยันและดำเนินการ" */
+        #payButton {
+            width: 100%;
+            padding: 12px;
+            background-color: #DEBF71; 
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        #payButton:hover {
+            background-color: #AB9457;
+        }
+
+        #resultContainer {
+            margin-top: 20px;
+            padding: 10px;
+            text-align: center;
+            border-radius: 5px;
+        }
+        
+        #resultMessage {
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: block;
+        }
+        
+        /* ส่วนยืนยันการโอนเงิน */
+        #transferDetails {
+            border: 1px dashed #007bff;
+            padding: 20px;
+            margin-top: 15px;
+            border-radius: 8px;
+            background-color: #e6f7ff;
+            display: none;
+        }
+
+        #transferDetails h3 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        #transferDetails input[type="file"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        /* ปุ่ม "ส่งหลักฐานการชำระเงิน" (ขั้นตอนที่ 2) - ถูกปรับสีแล้ว */
+        #uploadButton {
+            width: 100%;
+            padding: 10px;
+            margin-top: 15px;
+            background-color: #DEBF71; /* สีปุ่มตามที่ร้องขอ */
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s ease;
+        }
+        
+        /* สีเมื่อเมาส์เล็ง (Hover) - ถูกปรับสีแล้ว */
+        #uploadButton:hover {
+            background-color: #AB9457; /* สี Hover ตามที่ร้องขอ */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="payment-container">
+        <h1>ยืนยันคำสั่งซื้อ</h1>
+
+        <form id="paymentForm">
+            <div class="payment-option">
+                <input type="radio" id="cod" name="paymentMethod" value="cod" required>
+                <label for="cod">💰 ชำระเงินปลายทาง</label>
+                <p class="description">ชำระเงินสดเมื่อได้รับสินค้า</p>
+            </div>
+
+            <div class="payment-option">
+                <input type="radio" id="transfer" name="paymentMethod" value="transfer">
+                <label for="transfer">💸 โอนเงินทันที</label>
+                <p class="description">ชำระเงินผ่านการโอนธนาคารหรือสแกน QR Code</p>
+            </div>
+
+            <button type="submit" id="payButton">ยืนยันและดำเนินการ</button>
+        </form>
+
+        <div id="resultContainer">
+            <span id="resultMessage"></span>
+            
+            <div id="transferDetails">
+                <h3>ขั้นตอนที่ 2: อัปโหลดหลักฐานการโอนเงิน</h3>
+                <p style="font-size: 0.9em;">โปรดโอนเงินไปยังบัญชีที่ระบุและอัปโหลดสลิป</p>
+                
+                <label for="slipUpload" style="text-align: left; font-weight: normal; margin-top: 10px;">เลือกไฟล์สลิป:</label>
+                <input type="file" id="slipUpload" accept="image/*" required>
+                <button type="button" id="uploadButton">ส่งหลักฐานการชำระเงิน</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('paymentForm').addEventListener('submit', function(event) {
+            event.preventDefault(); 
+
+            const selectedMethod = document.querySelector('input[name="paymentMethod"]:checked');
+            const resultMessage = document.getElementById('resultMessage');
+            const transferDetails = document.getElementById('transferDetails');
+            const resultContainer = document.getElementById('resultContainer');
+
+            // รีเซ็ตการแสดงผล
+            transferDetails.style.display = 'none';
+            resultContainer.style.backgroundColor = 'transparent';
+            resultMessage.innerHTML = '';
+            
+            if (selectedMethod) {
+                const methodValue = selectedMethod.value;
+                
+                if (methodValue === 'cod') {
+                    // โลจิกสำหรับ 'จ่ายปลายทาง'
+                    resultMessage.innerHTML = '✅ คำสั่งซื้อของคุณ **ถูกส่งเข้าระบบ** แล้ว <br>รอชำระเงินเมื่อได้รับสินค้า';
+                    resultContainer.style.backgroundColor = '#d1ecf1';
+                    resultMessage.style.color = '#0c5460';
+                    
+                } else if (methodValue === 'transfer') {
+                    // โลจิกสำหรับ 'โอนทันที'
+                    resultMessage.innerHTML = '💸 โปรดดำเนินการโอนเงิน และอัปโหลดสลิปด้านล่างเพื่อยืนยันคำสั่งซื้อ';
+                    resultContainer.style.backgroundColor = '#fff3cd'; // สีเหลืองอ่อน
+                    resultMessage.style.color = '#856404'; 
+                    transferDetails.style.display = 'block'; // แสดงส่วนอัปโหลดสลิป
+                }
+
+            } else {
+                // กรณีที่ไม่ได้เลือกอะไรเลย
+                resultMessage.innerHTML = '⚠️ **กรุณาเลือกวิธีการชำระเงิน** ก่อนดำเนินการต่อ';
+                resultContainer.style.backgroundColor = '#f8d7da'; 
+                resultMessage.style.color = '#721c24'; 
+            }
+        });
+
+        // ฟังก์ชันสำหรับส่งหลักฐานการโอนเงิน
+        document.getElementById('uploadButton').addEventListener('click', function() {
+            const slipUpload = document.getElementById('slipUpload');
+            const resultMessage = document.getElementById('resultMessage');
+            const resultContainer = document.getElementById('resultContainer');
+            const transferDetails = document.getElementById('transferDetails');
+
+            if (slipUpload.files.length > 0) {
+                const fileName = slipUpload.files[0].name;
+                
+                // ซ่อนฟอร์มอัปโหลด
+                transferDetails.style.display = 'none';
+
+                // แสดงผลลัพธ์การส่งข้อมูล
+                resultMessage.innerHTML = `✅ **ส่งหลักฐานสำเร็จ!** <br>ระบบกำลังตรวจสอบการชำระเงินของคุณ <br>ไฟล์ที่ส่ง: ${fileName}`;
+                resultContainer.style.backgroundColor = '#d4edda'; // สีเขียวอ่อน
+                resultMessage.style.color = '#155724'; // สีเขียวเข้ม
+                
+            } else {
+                resultMessage.innerHTML = '⚠️ กรุณาเลือกไฟล์สลิปเพื่อส่งหลักฐานการโอนเงิน';
+                resultContainer.style.backgroundColor = '#f8d7da'; 
+                resultMessage.style.color = '#721c24';
+            }
+        });
+    </script>
+</body>
+</html>

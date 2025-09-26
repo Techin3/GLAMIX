@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GLAMIX -  สินค้าทั้งหมด </title>
+    <style>
+        /* ทั่วไป */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f8f8;
+            color: #333;
+        }
+
+        header {
+            background-color: #DEBF71;
+            padding: 30px;
+            text-align: center;
+            color: #000;
+        }
+
+        .logo {
+            font-size: 40px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        /* เมนูนำทาง */
+        nav {
+            margin-top: 20px;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        nav ul li {
+            display: inline;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: #000;
+            font-size: 18px;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            color: #fff;
+        }
+
+        /* ปุ่มกรองสินค้า */
+        .filter-buttons {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .filter-buttons button {
+            background-color: #FEEEC7;
+            border: none;
+            padding: 12px 25px;
+            font-size: 18px;
+            color: #000;
+            margin: 0 15px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            border-radius: 5px;
+        }
+
+        .filter-buttons button:hover {
+            background-color: #FFE094;
+        }
+
+        /* กริดแสดงสินค้า */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            padding: 40px;
+            justify-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .product-card {
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            width: 280px;
+        }
+
+        .product-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .product-card img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .product-name {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .product-description {
+            font-size: 14px;
+            color: #777;
+            margin-bottom: 20px;
+        }
+
+        .buy-button {
+            background-color: #FEEEC7;
+            color: #000;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .buy-button:hover {
+            background-color: #FFE094;
+        }
+
+        footer {
+            background-color: #FEEEC7;
+            color: #000;
+            padding: 15px;
+            text-align: center;
+            font-size: 14px;
+            position: fixed; /* ตรึงตำแหน่งไว้กับหน้าจอ */
+            bottom: 0;      /* ให้อยู่ด้านล่างสุด */
+            width: 100%;    /* ให้มีความกว้างเต็มหน้าจอ */
+            z-index: 1000;  /* ให้แสดงอยู่ด้านบนสุดของเนื้อหาอื่น */
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">GLAMIX</div>
+        
+        <!-- เมนูนำทาง -->
+        <nav>
+            <ul>
+                <li><a href="index.html">หน้าหลัก</a></li>
+                <li><a href="foryou.html">สำหรับคุณ</a></li>
+                <li><a href="all.html">สินค้าทั้งหมด</a></li>
+                <li><a href="Promo.html">โปรโมชั่น</a></li>
+                <li><a href="contact.html">ติดต่อเรา</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- ปุ่มกรองสินค้า -->
+    <div class="filter-buttons">
+        <button onclick="filterProducts('shirts')">เสื้อ</button>
+        <button onclick="filterProducts('pants')">กางเกง</button>
+        <button onclick="filterProducts('all')">ทั้งหมด</button>
+    </div>
+
+    <!-- กริดสินค้า -->
+    <div class="product-grid" id="product-grid">
+        <!-- เสื้อ -->
+        <div class="product-card product shirts">
+		<a target="_blank" href="img/clothes2.png">
+            <img src="img/clothes2.png" width="100%" alt="เสื้อเชิ้ต"></a>
+            <p class="product-name">เสื้อเชิ้ตสไตล์หรู</p>
+		<p class="product-description">เสื้อเชิ้ตสีขาวสุดหรูที่เหมาะกับทุกโอกาส</p>
+        </div>
+        <div class="product-card product shirts">
+		<a target="_blank" href="img/clothes1.png">
+            <img src="img/clothes1.png" width="100%" alt="เสื้อแขนยาว"></a>
+            <p class="product-name">เสื้อแขนยาว</p>
+		<p class="product-description">เสื้อแขนยาวที่ให้ความอบอุ่นและสไตล์</p>
+        </div>
+        <div class="product-card product shirts">
+		<a target="_blank" href="img/clothes5.png">
+            <img src="img/clothes5.png" width="100%" alt="เสื้อเช็ตแขนยาวมีสไตล์"></a>
+            <p class="product-name">เสื้อเช็ตแขนยาวมีสไตล์</p>
+		<p class="product-description">ใส่สบาย ไว้ใส่โอกาสสำคัญ</p>
+        </div>
+        <div class="product-card product shirts">
+		<a target="_blank" href="img/clothes6.png">
+            <img src="img/clothes6.png" width="100%" alt="สายเดี่ยวสีดำ"></a>
+            <p class="product-name">สายเดี่ยวสีดำ</p>
+		<p class="product-description">ใส่สบายไว้ใส่ออกกำลังกาย ใส่นอน</p>
+        </div>
+        <div class="product-card product shirts">
+		<a target="_blank" href="img/clothes7.png">
+            <img src="img/clothes7.png" width="100%" alt="สายเดี่ยวสีน้ำตาล"></a>
+            <p class="product-name">สายเดี่ยวสีน้ำตาล</p>
+		<p class="product-description">มีสายคล้องคอหนึ่งสาย มีสไตล์</p>
+        </div>
+	<div class="product-card product shirts">
+		<a target="_blank" href="img/clothes7.png">
+            <img src="img/pants5.png" width="100%" alt="ขาสั้นสีเขียว"></a>
+            <p class="product-name">ขาสั้นสีเขียว</p>
+		<p class="product-description">กางเกงขาสั้นสีเขียวใส่สบาย</p>
+        </div>
+<div class="product-card product shirts">
+		<a target="_blank" href="img/clothes3.png">
+            <img src="img/clothes3.png" width="100%" alt="เดรสแขนยาว"></a>
+            <p class="product-name">เดรสแขนยาว</p>
+		<p class="product-description">เดรสกระโปรงยาว แขนยาว ใส่ออกงาน</p>
+        </div>
+
+        <!-- กางเกง -->
+        <div class="product-card product pants">
+		<a target="_blank" href="img/pants1.png">
+            <img src="img/pants1.png" width="100%" alt="กางเกงขายาวสีขาว"></a>
+            <p class="product-name">กางเกงขายาวสีขาว</p>
+		<p class="product-description">กางเกงใส่สบาย ใส่ได้ทุกโอกาส</p>
+        </div>
+        <div class="product-card product pants">
+		<a target="_blank" href="img/pants6.png">
+            <img src="img/pants6.png" width="100%" alt="กระโปรงกางเกง"></a>
+            <p class="product-name">กระโปรงกางเกง</p>
+		<p class="product-description">กระโปรงสั้นมีซับใน ไว้ใส่ออกกำลังกาย</p>
+        </div>
+
+        <div class="product-card product pants">
+		<a target="_blank" href="img/pants2.png">
+            <img src="img/pants2.png" width="100%" alt="กางเกงขาสั้นสีขาว"></a>
+            <p class="product-name">กางเกงขาสั้นสีขาว</p>
+		<p class="product-description">กางเกงขาสั้นมีสไตล์ เรียบหรู ใส่สบาย</p>
+        </div>
+        <div class="product-card product pants">
+		<a target="_blank" href="img/pants7.png">
+            <img src="img/pants7.png" width="100%" alt="กางเกงขาสั้นสีดำ"></a>
+            <p class="product-name">กางเกงขาสั้นสีดำ</p>
+		<p class="product-description">เป็นตัวเลือกสำหรับคนอยากได้สีดำ</p>
+        </div>
+        <div class="product-card product pants">
+		<a target="_blank" href="img/pants8.png">
+            <img src="img/pants8.png" width="100%" alt="กางเกงขายาวสีดำ"></a>
+            <p class="product-name">กางเกงขายาวสีดำ</p>
+		<p class="product-description">ไว้ใส่ออกกำลังกาย ใส่วิ่ง ไม่อึดอัด</p>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Luksemburgas. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        // ฟังก์ชั่นกรองสินค้า
+        function filterProducts(category) {
+            const products = document.querySelectorAll('.product');
+            
+            products.forEach(product => {
+                if (category === 'all') {
+                    product.style.display = 'block';
+                } else if (product.classList.contains(category)) {
+                    product.style.display = 'block';
+                } else {
+                    product.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
